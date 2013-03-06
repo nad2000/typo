@@ -10,13 +10,13 @@ Feature: Write Articles
     And I have created an article titled "Bar" containing "Ipsum Lorem"
 
   Scenario: Merge controls are available
-    When I have opened the article typed "Foo" for editing
-    Then I should see "Merge Aricles"
+    When I am on the article "Foo" edit page
+    Then I should see "Merge Articles"
     And I should see "Article ID"
     And I should see "Merge"
 
   Scenario: Merge controls are available
-    Given I have opened the article typed "Foo" for editing
+    Given I am on the article "Foo" edit page
     When I fill in "merge_with" with article "Bar" ID
     And I press "Merge"
     Then I should see aricle titled "FooBar"

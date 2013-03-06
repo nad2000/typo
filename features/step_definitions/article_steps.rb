@@ -34,3 +34,20 @@ When /creat.*an\s*articl.*titl\w*\s+"(.*)" contain\w*\s+"(.*)"/ do |title,conten
   }
 end
 
+
+# When /^I.*open.*article.*"(.*?)".*for\s+editing/ do |title|
+#   step %{When I am on the article "#{title}" edit page}
+# end
+
+
+# When /on the article "(.*?)" edit page$/ do |arg1|
+#   pending # express the regexp above with the code you wish you had
+# end
+
+When /^I fill in "(.*?)" with article "(.*?)" ID$/ do |arg1, arg2|
+  pending # express the regexp above with the code you wish you had
+end
+
+Then /^I should see aricle titled "(.*?)"$/ do |arg1|
+  pending # express the regexp above with the code you wish you had
+end

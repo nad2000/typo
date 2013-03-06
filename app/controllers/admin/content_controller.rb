@@ -13,7 +13,7 @@ class Admin::ContentController < Admin::BaseController
 
   def index
     @search = params[:search] ? params[:search] : {}
-    
+
     @articles = Article.search_with_pagination(@search, {:page => params[:page], :per_page => this_blog.admin_display_elements})
 
     if request.xhr?
@@ -26,6 +26,7 @@ class Admin::ContentController < Admin::BaseController
   def new
     new_or_edit
   end
+
 
   def edit
     @article = Article.find(params[:id])
@@ -44,7 +45,7 @@ class Admin::ContentController < Admin::BaseController
       flash[:error] = _("Error, you are not allowed to perform this action")
       return(redirect_to :action => 'index')
     end
-    
+
     return(render 'admin/shared/destroy') unless request.post?
 
     @record.destroy
@@ -77,7 +78,7 @@ class Admin::ContentController < Admin::BaseController
 
   def attachment_save(attachment)
     begin
-      Resource.create(:filename => attachment.original_filename, :mime => attachment.content_type.chomp, 
+      Resource.create(:filename => attachment.original_filename, :mime => attachment.content_type.chomp,
                       :created_at => Time.now).write_to_disk(attachment)
     rescue => e
       logger.info(e.message)
@@ -92,7 +93,7 @@ class Admin::ContentController < Admin::BaseController
     @article.text_filter = current_user.text_filter if current_user.simple_editor?
 
     get_fresh_or_existing_draft_for_article
-    
+
     @article.attributes = params[:article]
     @article.published = false
     set_article_author
@@ -112,6 +113,31 @@ class Admin::ContentController < Admin::BaseController
     end
     render :text => nil
   end
+
+  def merge
+    id = params[:id]
+    id = params[:article][:id] if params[:article] && params[:article][:id]
+    merge_with = params[:merge_with]
+    @article1 = Article.find(id)
+    @article2 = Article.find(merge_with)
+
+    @article = Article.get_or_build_article
+    @article.title = (@article1.title or "") + (@article2.title or "")
+    @article.author = @article1.author or @article2.author
+    @article.body = (@article1.body or "")+ (@article2.body or "")
+    @article.keywords = @article1.keywords
+    if @article.keywords and @article2.keywords
+      @article.keywords += @article2.keywords
+    elsif @article2.keywords
+      @article.keywords = @article2.keywords
+    end
+    # TODO: comments
+
+    @article.save
+    redirect_to :action => 'edit', :id => @article.id
+
+  end
+
 
   protected
 
@@ -140,6 +166,11 @@ class Admin::ContentController < Admin::BaseController
   def real_action_for(action); { 'add' => :<<, 'remove' => :delete}[action]; end
 
   def new_or_edit
+    if params[:article] && params[:article][:merge] && params[:merge_with] && params[:merge_with] != ""
+      merge
+      return
+    end
+
     id = params[:id]
     id = params[:article][:id] if params[:article] && params[:article][:id]
     @article = Article.get_or_build_article(id)
@@ -159,13 +190,13 @@ class Admin::ContentController < Admin::BaseController
     @article.keywords = Tag.collection_to_string @article.tags
     @article.attributes = params[:article]
     # TODO: Consider refactoring, because double rescue looks... weird.
-        
+
     @article.published_at = DateTime.strptime(params[:article][:published_at], "%B %e, %Y %I:%M %p GMT%z").utc rescue Time.parse(params[:article][:published_at]).utc rescue nil
 
     if request.post?
       set_article_author
       save_attachments
-      
+
       @article.state = "draft" if @article.draft
 
       if @article.save
