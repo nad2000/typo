@@ -1,0 +1,14 @@
+<% if @article and @article.id and not hidden %>
+
+<h3><%= _("Merge Articles") %></h3>
+<div class='class'>
+  Aritcle ID
+  <input name="merge_with" type="text" />
+  <!-- %= text_field  'article', 'keywords', {:autocomplete => 'off', :style => 'width: 50%'} % -->
+</div>
+<div class='actions'>
+  <input id='merge' type="submit" value="<%= _('Merge') %>" name="article[merge]" class='btn info' />
+</div>
+
+
+<% end %>
