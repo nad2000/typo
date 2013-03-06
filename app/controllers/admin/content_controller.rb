@@ -121,7 +121,8 @@ class Admin::ContentController < Admin::BaseController
     @article1 = Article.find(id)
     @article2 = Article.find(merge_with)
 
-    @article = Article.get_or_build_article
+    #@article = Article.get_or_build_article
+    @article = @article1
     @article.title = (@article1.title or "") + (@article2.title or "")
     @article.author = @article1.author or @article2.author
     @article.body = (@article1.body or "")+ (@article2.body or "")
