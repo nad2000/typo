@@ -132,9 +132,12 @@ class Admin::ContentController < Admin::BaseController
     elsif @article2.keywords
       @article.keywords = @article2.keywords
     end
+
     # TODO: comments
 
     @article.save
+    @article2.delete
+    @article2.save
     redirect_to :action => 'edit', :id => @article.id
 
   end
