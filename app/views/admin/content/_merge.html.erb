@@ -1,6 +1,8 @@
 <% if @article and @article.id and not hidden %>
 
-<h3><%= _("Merge Articles") %></h3>
+<% if @current_user and @current_user.admin? %>
+  <h3><%= _("Merge Articles") %></h3>
+<% end %>
 <!-- %= form_tag :action=>"merge" do % -->
   <div class='class'>
     Article ID
@@ -8,6 +10,7 @@
     <!-- %= text_field  'article', 'keywords', {:autocomplete => 'off', :style => 'width: 50%'} % -->
   </div>
 <!--   <div class='actions'> -->
+
 <% if @current_user and @current_user.admin? %>
   <input id='merge' type="submit" value="<%= _('Merge') %>" name="article[merge]" />
 <% end %>
