@@ -123,7 +123,7 @@ class Admin::ContentController < Admin::BaseController
 
     #@article = Article.get_or_build_article
     @article = @article1
-    @article.title = (@article1.title or "") + (@article2.title or "")
+    @article.title = @article1.title or @article2.title
     @article.author = @article1.author or @article2.author
     @article.body = (@article1.body or "")+ (@article2.body or "")
     @article.keywords = @article1.keywords
@@ -134,10 +134,12 @@ class Admin::ContentController < Admin::BaseController
     end
 
     # TODO: comments
+    @article2.comments.each { |c| c.article_id = @article.id; c.save }
 
     @article.save
     @article2.delete
     @article2.save
+
     redirect_to :action => 'edit', :id => @article.id
 
   end
