@@ -115,13 +115,14 @@ class Admin::ContentController < Admin::BaseController
   end
 
   def merge
-
-    id = params[:id]
-    id = params[:article][:id] if params[:article] && params[:article][:id]
-    merge_with_id = params[:merge_with]
-    article = Article.find(id)
-    article.merge_with(merge_with_id)
-    redirect_to :action => 'edit', :id => article.id
+    if @current_user and @current_user == "admin"
+      id = params[:id]
+      id = params[:article][:id] if params[:article] && params[:article][:id]
+      merge_with_id = params[:merge_with]
+      article = Article.find(id)
+      article.merge_with(merge_with_id)
+      redirect_to :action => 'edit', :id => article.id
+    end
 
   end
 
@@ -153,6 +154,9 @@ class Admin::ContentController < Admin::BaseController
   def real_action_for(action); { 'add' => :<<, 'remove' => :delete}[action]; end
 
   def new_or_edit
+
+    #breakpoint
+
     if params[:merge_with] && params[:merge_with] != ""
       merge
       return
