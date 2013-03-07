@@ -157,7 +157,7 @@ class Admin::ContentController < Admin::BaseController
 
     #breakpoint
 
-    if params[:merge_with] and params[:merge_with] != "" and @article.published and @article.id
+    if params[:merge_with] and params[:merge_with] != "" and @current_user and @current_user.admin?
       merge
       return
     end
