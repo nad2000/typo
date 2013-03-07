@@ -115,7 +115,7 @@ class Admin::ContentController < Admin::BaseController
   end
 
   def merge
-    if @current_user and @current_user == "admin"
+    if @current_user and @current_user.admin?
       id = params[:id]
       id = params[:article][:id] if params[:article] && params[:article][:id]
       merge_with_id = params[:merge_with]

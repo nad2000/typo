@@ -230,7 +230,6 @@ class User < ActiveRecord::Base
   validates_confirmation_of :password
   validates_length_of :login, :within => 3..40
 
-
   private
 
   # Send a mail of creation user to the user create
