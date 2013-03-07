@@ -466,4 +466,31 @@ class Article < Content
     to = to - 1 # pull off 1 second so we don't overlap onto the next day
     return from..to
   end
+
+  def merge_with(other_article_id)
+
+    article = self
+    article1 = self
+    article2 = Article.find(other_article_id)
+
+    #@article = Article.get_or_build_article
+    article.title = article1.title or article2.title
+    article.author = article1.author or article2.author
+    article.body = (article1.body or "")+ (article2.body or "")
+    #article.keywords = article1.keywords
+    if article.keywords and article2.keywords
+      article.keywords += article2.keywords
+    elsif article2.keywords
+      article.keywords = article2.keywords
+    end
+
+    article2.comments.each { |c| c.article_id = article.id; c.save }
+
+    article.save
+    article2.delete
+    article2.save
+    return article
+
+  end
+
 end

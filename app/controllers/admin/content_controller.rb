@@ -115,32 +115,13 @@ class Admin::ContentController < Admin::BaseController
   end
 
   def merge
+
     id = params[:id]
     id = params[:article][:id] if params[:article] && params[:article][:id]
-    merge_with = params[:merge_with]
-    @article1 = Article.find(id)
-    @article2 = Article.find(merge_with)
-
-    #@article = Article.get_or_build_article
-    @article = @article1
-    @article.title = @article1.title or @article2.title
-    @article.author = @article1.author or @article2.author
-    @article.body = (@article1.body or "")+ (@article2.body or "")
-    @article.keywords = @article1.keywords
-    if @article.keywords and @article2.keywords
-      @article.keywords += @article2.keywords
-    elsif @article2.keywords
-      @article.keywords = @article2.keywords
-    end
-
-    # TODO: comments
-    @article2.comments.each { |c| c.article_id = @article.id; c.save }
-
-    @article.save
-    @article2.delete
-    @article2.save
-
-    redirect_to :action => 'edit', :id => @article.id
+    merge_with_id = params[:merge_with]
+    article = Article.find(id)
+    article.merge_with(merge_with_id)
+    redirect_to :action => 'edit', :id => article.id
 
   end
 
@@ -172,7 +153,7 @@ class Admin::ContentController < Admin::BaseController
   def real_action_for(action); { 'add' => :<<, 'remove' => :delete}[action]; end
 
   def new_or_edit
-    if params[:article] && params[:article][:merge] && params[:merge_with] && params[:merge_with] != ""
+    if params[:merge_with] && params[:merge_with] != ""
       merge
       return
     end
