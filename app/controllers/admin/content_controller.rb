@@ -157,7 +157,7 @@ class Admin::ContentController < Admin::BaseController
 
     #breakpoint
 
-    if params[:merge_with] && params[:merge_with] != ""
+    if params[:merge_with] and params[:merge_with] != "" and @article.published and @article.id
       merge
       return
     end
