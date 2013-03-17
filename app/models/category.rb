@@ -83,5 +83,17 @@ class Category < ActiveRecord::Base
 
   validates_presence_of :name
   validates_uniqueness_of :name, :on => :create
+
+  def self.get_or_build_category id = nil
+    return Category.find(id) if id
+    category = Category.new.tap do |c|
+      # art.allow_comments = art.blog.default_allow_comments
+      # art.allow_pings = art.blog.default_allow_pings
+      # art.text_filter = art.blog.text_filter
+      # art.old_permalink = art.permalink_url unless art.permalink.nil? or art.permalink.empty?
+      # art.published = true
+    end
+  end
+
 end
 
